@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/app_primary_button.dart';
 import '../../domain/entities/dashboard_summary.dart';
@@ -23,10 +25,10 @@ class DashboardPage extends StatelessWidget {
 }
 
 const mockDashboardSummary = DashboardSummary(
-  currentWeightKg: 78.5,
+  currentWeightKg: 178.5,
   weightChangeKg: -1.8,
   habitStreakDays: 12,
-  todayCaloriesLogged: 1450,
+  todayCaloriesLogged: 500,
   calorieGoal: 2200,
 );
 
@@ -148,35 +150,64 @@ class _ContentView extends StatelessWidget {
         children: [
           Text('Welcome back', style: theme.textTheme.headlineMedium),
           const SizedBox(height: AppSpacing.lg),
-          GridView.count(
-            crossAxisCount: 2,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: AppSpacing.md,
-            crossAxisSpacing: AppSpacing.md,
-            childAspectRatio: 1.4,
-            children: [
-              DashboardStatCard(
-                icon: Icons.monitor_weight_outlined,
-                label: 'Current weight',
-                value: '${data.currentWeightKg.toStringAsFixed(1)} kg',
-              ),
-              DashboardStatCard(
-                icon: Icons.trending_down,
-                label: 'Change',
-                value: '${data.weightChangeKg.toStringAsFixed(1)} kg',
-              ),
-              DashboardStatCard(
-                icon: Icons.local_fire_department_outlined,
-                label: 'Habit streak',
-                value: '${data.habitStreakDays} days',
-              ),
-              DashboardStatCard(
-                icon: Icons.restaurant_outlined,
-                label: 'Calories today',
-                value: '${data.todayCaloriesLogged}/${data.calorieGoal}',
-              ),
-            ],
+          Container(
+            padding: const EdgeInsets.all(AppSpacing.lg),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24),
+              border: Border.all(color: theme.dividerColor),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Your stats', style: theme.textTheme.titleMedium),
+                const SizedBox(height: AppSpacing.md),
+                GridView.count(
+                  crossAxisCount: 2,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  mainAxisSpacing: AppSpacing.md,
+                  crossAxisSpacing: AppSpacing.md,
+                  childAspectRatio: 1.1,
+                  children: [
+                    DashboardStatCard(
+                      icon: Icons.monitor_weight_outlined,
+                      label: 'Current weight',
+                      value: '${data.currentWeightKg.toStringAsFixed(1)} kg',
+                      accentColor: theme.colorScheme.secondary,
+                      onTap: () =>
+                          context.push('/dashboard/stat', extra: 'Current weight'),
+                    ),
+                    DashboardStatCard(
+                      icon: Icons.trending_down,
+                      label: 'Change',
+                      value: '${data.weightChangeKg.toStringAsFixed(1)} kg',
+                      accentColor: data.weightChangeKg <= 0
+                          ? (theme.brightness == Brightness.dark
+                                ? AppColors.dark.success
+                                : AppColors.light.success)
+                          : theme.colorScheme.error,
+                      onTap: () => context.push('/dashboard/stat', extra: 'Change'),
+                    ),
+                    DashboardStatCard(
+                      icon: Icons.local_fire_department_outlined,
+                      label: 'Habit streak',
+                      value: '${data.habitStreakDays} days',
+                      accentColor: theme.colorScheme.primary,
+                      onTap: () =>
+                          context.push('/dashboard/stat', extra: 'Habit streak'),
+                    ),
+                    DashboardStatCard(
+                      icon: Icons.restaurant_outlined,
+                      label: 'Calories today',
+                      value: '${data.todayCaloriesLogged} / ${data.calorieGoal}',
+                      accentColor: const Color(0xFFE8A33D),
+                      onTap: () =>
+                          context.push('/dashboard/stat', extra: 'Calories today'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),

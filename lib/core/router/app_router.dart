@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../../features/dashboard/presentation/pages/stat_detail_page.dart';
 import '../../features/lessons/presentation/pages/lessons_page.dart';
 import '../../features/profile/presentation/pages/profile_page.dart';
 import '../../shared/widgets/app_bottom_nav_bar.dart';
@@ -26,6 +27,14 @@ class AppRouter {
               GoRoute(
                 path: '/dashboard',
                 builder: (context, state) => const DashboardPage(),
+                routes: [
+                  GoRoute(
+                    path: 'stat',
+                    builder: (context, state) => StatDetailPage(
+                      label: state.extra as String? ?? 'Stat',
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
