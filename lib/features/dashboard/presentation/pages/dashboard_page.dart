@@ -5,7 +5,8 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../shared/widgets/app_primary_button.dart';
 import '../../domain/entities/dashboard_summary.dart';
-import '../bloc/dashboard_cubit.dart';
+import '../bloc/dashboard_bloc.dart';
+import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
 import '../widgets/dashboard_stat_card.dart';
 
@@ -15,7 +16,7 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<DashboardCubit>(),
+      create: (_) => getIt<DashboardBloc>(),
       child: const _DashboardView(),
     );
   }
@@ -37,7 +38,7 @@ class _DashboardView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Dashboard')),
       body: SafeArea(
-        child: BlocBuilder<DashboardCubit, DashboardState>(
+        child: BlocBuilder<DashboardBloc, DashboardState>(
           builder: (context, state) => switch (state) {
             DashboardLoading() => const _LoadingView(),
             DashboardError(:final message) => _ErrorView(message: message),
@@ -89,7 +90,7 @@ class _EmptyView extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         AppPrimaryButton(
           label: 'Get started',
-          onPressed: () => context.read<DashboardCubit>().loadDashboard(),
+          onPressed: () => context.read<DashboardBloc>().add(const DashboardRequested()),
         ),
       ],
     );
@@ -124,7 +125,7 @@ class _ErrorView extends StatelessWidget {
         const SizedBox(height: AppSpacing.xl),
         AppPrimaryButton(
           label: 'Try again',
-          onPressed: () => context.read<DashboardCubit>().loadDashboard(),
+          onPressed: () => context.read<DashboardBloc>().add(const DashboardRequested()),
         ),
       ],
     );
@@ -140,7 +141,8 @@ class _ContentView extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return RefreshIndicator(
-      onRefresh: () => context.read<DashboardCubit>().loadDashboard(),
+      onRefresh: () async =>
+          context.read<DashboardBloc>().add(const DashboardRequested()),
       child: ListView(
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [

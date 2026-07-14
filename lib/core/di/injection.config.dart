@@ -19,8 +19,8 @@ import 'package:leanova/features/dashboard/domain/repositories/dashboard_reposit
     as _i643;
 import 'package:leanova/features/dashboard/domain/usecases/get_dashboard_summary.dart'
     as _i20;
-import 'package:leanova/features/dashboard/presentation/bloc/dashboard_cubit.dart'
-    as _i90;
+import 'package:leanova/features/dashboard/presentation/bloc/dashboard_bloc.dart'
+    as _i384;
 
 extension GetItInjectableX on _i174.GetIt {
   // initializes the registration of main-scope dependencies inside of GetIt
@@ -38,8 +38,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i20.GetDashboardSummary>(
       () => _i20.GetDashboardSummary(gh<_i643.DashboardRepository>()),
     );
-    gh.factory<_i90.DashboardCubit>(
-      () => _i90.DashboardCubit(gh<_i20.GetDashboardSummary>()),
+    gh.factory<_i384.DashboardBloc>(
+      () => _i384.DashboardBloc(gh<_i20.GetDashboardSummary>()),
     );
     return this;
   }
